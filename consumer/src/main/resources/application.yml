@@ -1,0 +1,7 @@
+kafka:
+  server: localhost:9101
+  group:
+    id: broadcast
+
+server:
+  port: 8081

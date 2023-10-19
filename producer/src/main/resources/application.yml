@@ -1,0 +1,4 @@
+kafka:
+  server: localhost:9101
+  producer:
+    id: 1

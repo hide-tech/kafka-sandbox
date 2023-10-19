@@ -1,0 +1,7 @@
+kafka:
+  server: localhost:9101
+  group:
+    id: stream
+
+server:
+  port: 8082

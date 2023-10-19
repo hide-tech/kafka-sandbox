@@ -1,0 +1,101 @@
+version: "3"
+services:
+  consumer:
+    depends_on:
+      - kafka-1
+    build: ../consumer
+    ports:
+      - 9000:8081
+    environment:
+      - KAFKA_SERVER=kafka-1:9092
+
+  producer:
+    depends_on:
+      - consumer
+    build: .
+    ports:
+      - 9001:8080
+    environment:
+      - KAFKA_SERVER=kafka-1:9092
+
+  kafka-1:
+    image: "bitnami/kafka:3.4.0"
+    container_name: kafka-1
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=kraft:PLAINTEXT,CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9094,2@kafka-2:9094,3@kafka-3:9094
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - BITNAMI_DEBUG=yes
+      - KAFKA_KRAFT_CLUSTER_ID=OTMwNzFhYTY1ODNiNGE5OT
+      - KAFKA_CFG_KRAFT_REPLICATION_FACTOR=1
+      - KAFKA_CFG_ADVERTISED_LISTENERS=kraft://:9093,INTERNAL://kafka-1:9092
+      - KAFKA_CFG_LISTENERS=kraft://:9093,CONTROLLER://kafka-1:9094,INTERNAL://:9092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+      - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=1
+    ports:
+      - "9101:9092"
+      - "9102:9093"
+      - "9103:9094"
+
+  kafka-2:
+    image: "bitnami/kafka:3.4.0"
+    container_name: kafka-2
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=kraft:PLAINTEXT,CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
+      - KAFKA_CFG_NODE_ID=2
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9094,2@kafka-2:9094,3@kafka-3:9094
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - BITNAMI_DEBUG=yes
+      - KAFKA_KRAFT_CLUSTER_ID=OTMwNzFhYTY1ODNiNGE5OT
+      - KAFKA_CFG_KRAFT_REPLICATION_FACTOR=1
+      - KAFKA_CFG_ADVERTISED_LISTENERS=kraft://:9093,INTERNAL://kafka-2:9092
+      - KAFKA_CFG_LISTENERS=kraft://:9093,CONTROLLER://kafka-2:9094,INTERNAL://:9092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+      - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=1
+    ports:
+      - "9095:9092"
+      - "9096:9093"
+      - "9097:9094"
+
+  kafka-3:
+    image: "bitnami/kafka:3.4.0"
+    container_name: kafka-3
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=kraft:PLAINTEXT,CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
+      - KAFKA_CFG_NODE_ID=3
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9094,2@kafka-2:9094,3@kafka-3:9094
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - BITNAMI_DEBUG=yes
+      - KAFKA_KRAFT_CLUSTER_ID=OTMwNzFhYTY1ODNiNGE5OT
+      - KAFKA_CFG_KRAFT_REPLICATION_FACTOR=1
+      - KAFKA_CFG_ADVERTISED_LISTENERS=kraft://:9093,INTERNAL://kafka-3:9092
+      - KAFKA_CFG_LISTENERS=kraft://:9093,CONTROLLER://kafka-3:9094,INTERNAL://:9092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+      - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=1
+    ports:
+      - "9098:9092"
+      - "9099:9093"
+      - "9100:9094"
+
+  function:
+    depends_on:
+      - producer
+    build: ../function
+    restart: always
+    ports:
+      - 9002:8082
+    environment:
+      - KAFKA_SERVER=kafka-1:9092
