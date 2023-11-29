@@ -1,5 +1,5 @@
 # kafka-sandbox
 quickstart:
-  cd producer
-  docker compose up
-  check logs out
+cd producer
+docker compose up
+check logs out
